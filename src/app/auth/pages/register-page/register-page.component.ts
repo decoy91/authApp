@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-  standalone: true,
-  imports: [],
+  selector: 'register-page',
   templateUrl: './register-page.component.html',
   styleUrl: './register-page.component.css'
 })
