@@ -2,7 +2,7 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import { environment } from '../../../environments/environments';
 import { HttpClient } from '@angular/common/http';
 import { sign } from 'crypto';
-import { map, Observable, of, tap } from 'rxjs';
+import { catchError, map, Observable, of, tap, throwError } from 'rxjs';
 import { AuthStatus, LoginResponse, User } from '../interfaces';
 import { response } from 'express';
 
@@ -37,11 +37,11 @@ export class AuthService {
         localStorage.setItem('token', token);
         console.log({user,token});
       }),
-      map(() => true)
+      map(() => true),
 
       //Todo falta manejar errores
-
-    );
+      catchError( err => throwError( ()=> err.error.message)
+      )
+    )
   }
-
 }
