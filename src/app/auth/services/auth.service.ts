@@ -19,8 +19,8 @@ export class AuthService {
 
   //! Variables para el mundo exterior
 
-  public currentUser  = computed(() => this._currentUser);
-  public authStatus  = computed(() => this._authStatus);
+  public currentUser  = computed(() => this._currentUser());
+  public authStatus  = computed(() => this._authStatus());
 
   constructor() { }
 
@@ -35,7 +35,6 @@ export class AuthService {
         this._currentUser.set(user);
         this._authStatus.set(AuthStatus.authenticated);
         localStorage.setItem('token', token);
-        console.log({user,token});
       }),
       map(() => true),
 
