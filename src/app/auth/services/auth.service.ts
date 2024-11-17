@@ -22,7 +22,9 @@ export class AuthService {
   public currentUser  = computed(() => this._currentUser());
   public authStatus  = computed(() => this._authStatus());
 
-  constructor() { }
+  constructor() {
+    this.checkAuthStatus().subscribe();
+  }
 
   private setAuthentication(user: User, token: string): boolean{
     this._currentUser.set(user);
@@ -40,9 +42,8 @@ export class AuthService {
     return this.http.post<LoginResponse>(url, body)
     .pipe(
       map( ({user, token}) => this.setAuthentication(user, token)),
-      catchError( err => throwError( ()=> err.error.message)
-      )
-    )
+      catchError( err => throwError( ()=> err.error.message))
+    );
   }
 
   checkAuthStatus():Observable<boolean>{
@@ -54,17 +55,16 @@ export class AuthService {
     if(!token) return of (false);
 
     const headers = new HttpHeaders()
-    .set('Authorization', `Bearer ${ token }`)
+    .set('Authorization', `Bearer ${ token }`);
 
     return this.http.get<CheckTokenResponse>(url, { headers})
     .pipe(
       map( ({user, token}) => this.setAuthentication(user, token)),
       catchError(()=> {
-        this._authStatus.set(AuthStatus.notAuthenticated)
+        this._authStatus.set(AuthStatus.notAuthenticated);
         return of(false);
       })
-    )
-
+    );
   }
 
 }
