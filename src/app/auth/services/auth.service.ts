@@ -1,10 +1,8 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { environment } from '../../../environments/environments';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { sign } from 'crypto';
 import { catchError, map, Observable, of, tap, throwError } from 'rxjs';
 import { AuthStatus, CheckTokenResponse, LoginResponse, User } from '../interfaces';
-import { response } from 'express';
 
 @Injectable({
   providedIn: 'root'
@@ -52,7 +50,10 @@ export class AuthService {
 
     const token = localStorage.getItem('token');
 
-    if(!token) return of (false);
+    if(!token) {
+      this.logout();
+     return of (false);
+    };
 
     const headers = new HttpHeaders()
     .set('Authorization', `Bearer ${ token }`);
@@ -65,6 +66,12 @@ export class AuthService {
         return of(false);
       })
     );
+  }
+
+  logout(){
+    localStorage.removeItem('token');
+    this._currentUser.set(null);
+    this._authStatus.set(AuthStatus.notAuthenticated);
   }
 
 }
